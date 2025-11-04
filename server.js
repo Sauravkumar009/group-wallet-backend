@@ -937,6 +937,33 @@ app.get('/api/debug/users', (req, res) => {
   res.json(users);
 });
 
+// Debug OTP endpoint
+app.post('/api/debug-otp', async (req, res) => {
+  try {
+    const { email } = req.body;
+    const otp = '123456';
+    
+    console.log(`📧 Attempting to send OTP to: ${email}`);
+    
+    const emailSent = await sendOTPEmail(email, otp, 'signup');
+    
+    console.log(`✅ OTP sent: ${emailSent}`);
+    
+    res.json({
+      success: true,
+      message: 'OTP test completed',
+      emailSent: emailSent,
+      otp: otp
+    });
+  } catch (error) {
+    console.log('❌ OTP error:', error.message);
+    res.json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 // Test email endpoint - ADD THIS
 app.get('/api/test-email', async (req, res) => {
   try {
@@ -1003,6 +1030,7 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`💸 Withdrawal system: UPI-based`);
 
 });
+
 
 
 
