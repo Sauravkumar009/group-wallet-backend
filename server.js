@@ -977,7 +977,7 @@ setInterval(() => {
 }, 60 * 60 * 1000);
 
 // Start server
-app.listen(PORT, '0.0.0.0' () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
   console.log(`📧 Email authentication: ENABLED`);
   console.log(`🔐 OTP via Nodemailer: ACTIVE`);
@@ -987,3 +987,4 @@ app.listen(PORT, '0.0.0.0' () => {
   console.log(`💸 Withdrawal system: UPI-based`);
 
 });
+
