@@ -936,6 +936,21 @@ app.get('/api/debug/users', (req, res) => {
   res.json(users);
 });
 
+// Test email endpoint - ADD THIS
+app.get('/api/test-email', async (req, res) => {
+  try {
+    await transporter.sendMail({
+      from: '"Group Wallet" <rlsauravkumar30@gmail.com>',
+      to: 'rlsauravkumar30@gmail.com',
+      subject: 'Test Email from Render',
+      text: 'This is a test email from your deployed backend'
+    });
+    res.json({ success: true, message: 'Test email sent' });
+  } catch (error) {
+    res.json({ success: false, error: error.message });
+  }
+});
+
 // Reset demo data (for testing)
 app.post('/api/reset-demo', (req, res) => {
   initializeDemoData();
@@ -987,4 +1002,5 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`💸 Withdrawal system: UPI-based`);
 
 });
+
 
