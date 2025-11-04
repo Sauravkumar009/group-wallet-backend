@@ -13,10 +13,11 @@ app.use(bodyParser.json());
 
 // Nodemailer configuration (Gmail SMTP - Update with your credentials)
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.ethereal.email',
+  port: 587,
   auth: {
-    user: 'rlsauravkumar30@gmail.com',
-    pass: 'llnklvvmwyfihfvw'
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
   }
 });
 
@@ -1002,5 +1003,6 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`💸 Withdrawal system: UPI-based`);
 
 });
+
 
 
