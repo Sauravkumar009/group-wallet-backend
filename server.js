@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const { v4: uuidv4 } = require('uuid');
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 
 const app = express();
 const PORT = 3000;
@@ -11,15 +11,33 @@ const PORT = 3000;
 app.use(cors());
 app.use(bodyParser.json());
 
-// Nodemailer configuration (Gmail SMTP - Update with your credentials)
-const transporter = nodemailer.createTransport({
-  host: 'smtp.ethereal.email',
-  port: 587,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+// Replace your sendOTPEmail function with:
+const sendOTPEmail = async (email, otp, purpose = 'verification') => {
+  try {
+    const subject = purpose === 'signup' 
+      ? 'Welcome to Group Wallet - Verify Your Email'
+      : 'Your Login OTP for Group Wallet';
+
+    const html = purpose === 'signup' 
+      ? `Your verification OTP is: <strong>${otp}</strong>`
+      : `Your login OTP is: <strong>${otp}</strong>`;
+
+    await resend.emails.send({
+      from: 'Group Wallet <onboarding@resend.dev>',
+      to: email,
+      subject: subject,
+      html: html
+    });
+    
+    console.log(`✅ OTP sent to ${email}: ${otp}`);
+    return true;
+  } catch (error) {
+    console.log('❌ Resend email error:', error);
+    return false;
   }
-});
+};
 
 // In-memory storage
 let users = [];
@@ -1023,13 +1041,14 @@ setInterval(() => {
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
   console.log(`📧 Email authentication: ENABLED`);
-  console.log(`🔐 OTP via Nodemailer: ACTIVE`);
+  
   console.log(`👥 Demo users: ${users.length}`);
   console.log(`📊 Demo groups: ${groups.length}`);
   console.log(`💳 Payment system: ENABLED`);
   console.log(`💸 Withdrawal system: UPI-based`);
 
 });
+
 
 
 
