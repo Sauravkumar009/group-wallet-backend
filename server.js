@@ -58,88 +58,7 @@ const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
 
-// Send OTP via Email
-const sendOTPEmail = async (email, otp, purpose = 'verification') => {
-  try {
-    const subject = purpose === 'signup' 
-      ? 'Welcome to Group Wallet - Verify Your Email'
-      : 'Your Login OTP for Group Wallet';
 
-    const html = purpose === 'signup' 
-      ? `
-        <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: 0 auto;">
-          <div style="text-align: center; margin-bottom: 30px;">
-            <h1 style="color: #007AFF; margin: 0;">Group Wallet</h1>
-            <p style="color: #666; margin: 5px 0;">Multi-signature expense tracking</p>
-          </div>
-          
-          <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; text-align: center;">
-            <h2 style="color: #333; margin-bottom: 20px;">Verify Your Email Address</h2>
-            <p style="color: #666; margin-bottom: 25px;">Use this OTP to complete your registration:</p>
-            
-            <div style="background: white; padding: 15px; border-radius: 8px; display: inline-block; margin: 10px 0;">
-              <h1 style="font-size: 32px; color: #007AFF; margin: 0; letter-spacing: 5px;">
-                ${otp}
-              </h1>
-            </div>
-            
-            <p style="color: #999; font-size: 12px; margin-top: 20px;">
-              This OTP is valid for 10 minutes.
-            </p>
-          </div>
-          
-          <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
-            <p style="color: #666; font-size: 12px;">
-              If you didn't request this verification, please ignore this email.
-            </p>
-          </div>
-        </div>
-      `
-      : `
-        <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: 0 auto;">
-          <div style="text-align: center; margin-bottom: 30px;">
-            <h1 style="color: #007AFF; margin: 0;">Group Wallet</h1>
-            <p style="color: #666; margin: 5px 0;">Multi-signature expense tracking</p>
-          </div>
-          
-          <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; text-align: center;">
-            <h2 style="color: #333; margin-bottom: 20px;">Your Login OTP</h2>
-            <p style="color: #666; margin-bottom: 25px;">Use this OTP to securely login to your account:</p>
-            
-            <div style="background: white; padding: 15px; border-radius: 8px; display: inline-block; margin: 10px 0;">
-              <h1 style="font-size: 32px; color: #007AFF; margin: 0; letter-spacing: 5px;">
-                ${otp}
-              </h1>
-            </div>
-            
-            <p style="color: #999; font-size: 12px; margin-top: 20px;">
-              This OTP is valid for 10 minutes.
-            </p>
-          </div>
-          
-          <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
-            <p style="color: #666; font-size: 12px;">
-              If you didn't request this OTP, please secure your account immediately.
-            </p>
-          </div>
-        </div>
-      `;
-
-    const mailOptions = {
-      from: '"Group Wallet" <rlsauravkumar30@gmail.com>',
-      to: email,
-      subject: subject,
-      html: html
-    };
-
-    await transporter.sendMail(mailOptions);
-    console.log(`OTP sent to ${email}: ${otp}`);
-    return true;
-  } catch (error) {
-    console.error('Email sending error:', error);
-    return false;
-  }
-};
 
 // Calculate available balance (only PAID transactions)
 const calculateAvailableBalance = (group) => {
@@ -1048,6 +967,7 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`💸 Withdrawal system: UPI-based`);
 
 });
+
 
 
 
