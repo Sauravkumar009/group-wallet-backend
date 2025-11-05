@@ -170,15 +170,16 @@ app.post('/api/auth/signup', async (req, res) => {
 
     const emailSent = await sendOTPEmail(email, otp, 'signup');
     
-    if (emailSent) {
-      res.json({ 
-        success: true, 
-        message: 'OTP sent to your email',
-        email 
-      });
-    } else {
-      res.status(500).json({ error: 'Failed to send OTP email' });
-    }
+if (emailSent) {
+  res.json({ 
+    success: true, 
+    message: 'OTP sent to your email',
+    email,
+    debugOtp: otp  // ← ADD THIS LINE
+  });
+} else {
+  res.status(500).json({ error: 'Failed to send OTP email' });
+}
   } catch (error) {
     console.error('Signup error:', error);
     res.status(500).json({ error: 'Internal server error' });
@@ -255,17 +256,18 @@ app.post('/api/auth/login', async (req, res) => {
 
     const emailSent = await sendOTPEmail(user.email, otp, 'login');
     
-    if (emailSent) {
-      res.json({ 
-        success: true, 
-        message: `OTP sent to your registered email`,
-        email: user.email,
-        name: user.name,
-        phone: user.phone
-      });
-    } else {
-      res.status(500).json({ error: 'Failed to send OTP email' });
-    }
+   if (emailSent) {
+  res.json({ 
+    success: true, 
+    message: `OTP sent to your registered email`,
+    email: user.email,
+    name: user.name,
+    phone: user.phone,
+    debugOtp: otp  
+  });
+} else {
+  res.status(500).json({ error: 'Failed to send OTP email' });
+}
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ error: 'Internal server error' });
@@ -967,6 +969,7 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`💸 Withdrawal system: UPI-based`);
 
 });
+
 
 
 
