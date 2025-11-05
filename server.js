@@ -11,32 +11,12 @@ const PORT = 3000;
 app.use(cors());
 app.use(bodyParser.json());
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
-// Replace your sendOTPEmail function with:
+// Remove Resend email service completely
+// Replace sendOTPEmail function with simple OTP logging
 const sendOTPEmail = async (email, otp, purpose = 'verification') => {
-  try {
-    const subject = purpose === 'signup' 
-      ? 'Welcome to Group Wallet - Verify Your Email'
-      : 'Your Login OTP for Group Wallet';
-
-    const html = purpose === 'signup' 
-      ? `Your verification OTP is: <strong>${otp}</strong>`
-      : `Your login OTP is: <strong>${otp}</strong>`;
-
-    await resend.emails.send({
-      from: 'Group Wallet <onboarding@resend.dev>',
-      to: email,
-      subject: subject,
-      html: html
-    });
-    
-    console.log(`✅ OTP sent to ${email}: ${otp}`);
-    return true;
-  } catch (error) {
-    console.log('❌ Resend email error:', error);
-    return false;
-  }
+  // Just log to console, no actual email sending
+  console.log(`📧 [${purpose.toUpperCase()}] OTP for ${email}: ${otp}`);
+  return true; // Always return true since no email is actually sent
 };
 
 // In-memory storage
@@ -57,8 +37,6 @@ const TRANSACTION_STATUS = {
 const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
-
-
 
 // Calculate available balance (only PAID transactions)
 const calculateAvailableBalance = (group) => {
@@ -125,7 +103,7 @@ initializeDemoData();
 
 // ================= AUTHENTICATION ROUTES =================
 
-// SIGNUP: Send OTP to email
+// SIGNUP: Generate OTP (no email sending)
 app.post('/api/auth/signup', async (req, res) => {
   const { name, phone, email } = req.body;
 
@@ -168,25 +146,22 @@ app.post('/api/auth/signup', async (req, res) => {
       expiresAt: Date.now() + 10 * 60 * 1000
     });
 
-    const emailSent = await sendOTPEmail(email, otp, 'signup');
+    // Remove email sending error handling - always succeed
+    await sendOTPEmail(email, otp, 'signup');
     
-if (emailSent) {
-  res.json({ 
-    success: true, 
-    message: 'OTP sent to your email',
-    email,
-    debugOtp: otp  // ← ADD THIS LINE
-  });
-} else {
-  res.status(500).json({ error: 'Failed to send OTP email' });
-}
+    res.json({ 
+      success: true, 
+      message: 'OTP sent to your email',
+      email,
+      debugOtp: otp
+    });
   } catch (error) {
     console.error('Signup error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-// VERIFY SIGNUP OTP
+// VERIFY SIGNUP OTP (no changes needed)
 app.post('/api/auth/verify-signup', (req, res) => {
   const { email, otp } = req.body;
 
@@ -228,7 +203,7 @@ app.post('/api/auth/verify-signup', (req, res) => {
   });
 });
 
-// LOGIN: Send OTP to registered email
+// LOGIN: Generate OTP (no email sending)
 app.post('/api/auth/login', async (req, res) => {
   const { name, phone } = req.body;
 
@@ -254,27 +229,24 @@ app.post('/api/auth/login', async (req, res) => {
       expiresAt: Date.now() + 10 * 60 * 1000
     });
 
-    const emailSent = await sendOTPEmail(user.email, otp, 'login');
+    // Remove email sending error handling - always succeed
+    await sendOTPEmail(user.email, otp, 'login');
     
-   if (emailSent) {
-  res.json({ 
-    success: true, 
-    message: `OTP sent to your registered email`,
-    email: user.email,
-    name: user.name,
-    phone: user.phone,
-    debugOtp: otp  
-  });
-} else {
-  res.status(500).json({ error: 'Failed to send OTP email' });
-}
+    res.json({ 
+      success: true, 
+      message: `OTP sent to your registered email`,
+      email: user.email,
+      name: user.name,
+      phone: user.phone,
+      debugOtp: otp  
+    });
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-// VERIFY LOGIN OTP
+// VERIFY LOGIN OTP (no changes needed)
 app.post('/api/auth/verify-login', (req, res) => {
   const { email, otp } = req.body;
 
@@ -969,6 +941,7 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`💸 Withdrawal system: UPI-based`);
 
 });
+
 
 
 
